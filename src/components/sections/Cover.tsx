@@ -75,10 +75,11 @@ export function Cover({ onOpen }: Props) {
           className={styles.seal}
           onClick={handleOpen}
           variants={fade(reduced)}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={reduced ? undefined : { scale: 1.045 }}
+          whileTap={{ scale: 0.96 }}
           aria-label={wedding.cover.openAria}
         >
+          <span className={styles.sealGlow} aria-hidden="true" />
           <span className={styles.sealInner}>
             <span className={`script ${styles.sealText}`}>
               {wedding.groom.first[0]}

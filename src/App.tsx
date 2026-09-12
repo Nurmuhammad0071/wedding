@@ -13,7 +13,6 @@ import { Invitation } from './components/sections/Invitation';
 import { Countdown } from './components/sections/Countdown';
 import { Venue } from './components/sections/Venue';
 import { Rsvp } from './components/sections/Rsvp';
-import { Gift } from './components/sections/Gift';
 import { Final } from './components/sections/Final';
 import styles from './App.module.css';
 
@@ -79,11 +78,7 @@ export default function App() {
 
         {/* 4 — reply card */}
         <Card flourishes={['tl', 'br']}>
-          <div className={styles.stack}>
-            <Rsvp />
-            <Divider />
-            <Gift />
-          </div>
+          <Rsvp />
         </Card>
 
         {/* 6 — closing card */}
