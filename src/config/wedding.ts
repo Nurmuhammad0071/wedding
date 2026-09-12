@@ -35,7 +35,7 @@ export const wedding = {
   timeLabel: 'Kechki soat 18:00',
 
   venue: {
-    name: 'Oqshom restorani',
+    name: 'Oqshom to‘yxonasi',
     city: 'Qamashi tumani',
     region: 'Qashqadaryo viloyati',
     address: 'Qashqadaryo viloyati, Qamashi tumani',
