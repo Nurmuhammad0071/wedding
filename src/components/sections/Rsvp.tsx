@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState, type FormEvent } from 'react';
 import { wedding } from '../../config/wedding';
 import { Section } from '../layout/Section';
-import { Reveal, Stagger, Item } from '../motion/Reveal';
+import { Stagger, Item } from '../motion/Reveal';
 import { Button } from '../ui/Button';
 import styles from './Rsvp.module.css';
 
@@ -51,10 +51,6 @@ export function Rsvp() {
 
   return (
     <Section id="rsvp" eyebrow={wedding.text.rsvpEyebrow} title={wedding.text.rsvpTitle}>
-      <Reveal variant="fadeIn">
-        <p className={`lead center ${styles.note}`}>{wedding.text.rsvpNote}</p>
-      </Reveal>
-
       <div className={styles.frame}>
         <AnimatePresence mode="wait">
           {status === 'done' ? (

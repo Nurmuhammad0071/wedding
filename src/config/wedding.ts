@@ -75,7 +75,7 @@ export const wedding = {
       'Iltimos, yumshoq va nafis ranglarda kiyining. Pushti, sage va krem ranglari juda mos keladi.',
     rsvpEyebrow: 'Javob',
     rsvpTitle: 'Iltimos, javob bering',
-    rsvpNote: 'Iltimos, 20-sentabrgacha javob yozing',
+    rsvpNote: '',
     finalEyebrow: 'Sevgi bilan',
     finalTitle: 'Siz bilan nishonlashni intiqlik bilan kutamiz',
     hashtag: '#DostonVaFalina2026',
