@@ -1,0 +1,22 @@
+.section {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  scroll-margin-top: 24px;
+}
+
+.header {
+  text-align: center;
+  display: grid;
+  gap: 10px;
+  margin-bottom: clamp(28px, 6vw, 44px);
+}
+.header.left {
+  text-align: left;
+}
+
+.title {
+  font-size: var(--fs-script-lg);
+  color: var(--ink);
+  padding: 0 0.2em 0.1em;
+}

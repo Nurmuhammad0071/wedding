@@ -1,0 +1,27 @@
+.root {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 360px);
+  margin: 0 auto;
+}
+
+.line {
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line) 40%, var(--line) 60%, transparent);
+  position: relative;
+}
+.line::after {
+  content: '';
+  position: absolute;
+  inset: 1px 0 auto 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.sprig {
+  width: 56px;
+  height: 28px;
+}

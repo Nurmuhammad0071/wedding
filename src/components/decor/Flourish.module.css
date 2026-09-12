@@ -1,0 +1,16 @@
+.root {
+  overflow: visible;
+  /* emboss: white relief with a soft, warm shadow beneath */
+  filter: drop-shadow(0 1px 0.6px rgba(84, 70, 52, 0.28)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.strokes {
+  stroke: var(--white);
+  stroke-width: 3.2;
+}
+
+.fills {
+  fill: var(--white);
+}

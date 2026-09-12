@@ -1,0 +1,31 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.swash {
+  width: clamp(64px, 18vw, 110px);
+  height: auto;
+  flex: 0 0 auto;
+  overflow: visible;
+}
+.swash path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.swashRight {
+  transform: scaleX(-1);
+}
+
+.word {
+  font-size: var(--fs-script-md);
+  line-height: 1;
+  padding: 0 4px 6px;
+  color: var(--ink);
+}

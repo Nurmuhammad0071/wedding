@@ -1,0 +1,80 @@
+.intro {
+  max-width: 34ch;
+  margin: 0 auto clamp(36px, 8vw, 56px);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: clamp(20px, 5vw, 28px);
+}
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: clamp(20px, 3vw, 40px);
+  }
+}
+
+.person {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.photoWrap {
+  width: min(66vw, 240px);
+  margin-bottom: 10px;
+}
+@media (min-width: 720px) {
+  .photoWrap {
+    width: min(100%, 250px);
+  }
+}
+
+/* arch-shaped paper print with a white border, like a mounted photograph */
+.photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  padding: 7px;
+  background: var(--white);
+  border-radius: 999px 999px 10px 10px;
+  box-shadow: var(--shadow-photo);
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 12%;
+  border-radius: 999px 999px 6px 6px;
+  filter: saturate(0.92) contrast(0.98);
+}
+
+.name {
+  font-size: var(--fs-script-lg);
+  padding: 0 0.2em 0.05em;
+  line-height: 1.1;
+}
+.last {
+  margin-top: -4px;
+}
+.note {
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+}
+
+.and {
+  width: min(100%, 300px);
+}
+@media (min-width: 720px) {
+  .and {
+    width: 220px;
+    align-self: center;
+    transform: translateY(-40px);
+  }
+}

@@ -1,0 +1,152 @@
+.wrap {
+  position: relative;
+}
+
+.card {
+  min-height: calc(100svh - 2 * var(--page-pad));
+  display: flex;
+  flex-direction: column;
+}
+.card > :global(div:last-of-type) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* florals — positions mirror the reference card */
+.floralTL {
+  position: absolute;
+  z-index: 1;
+  top: -1.5%;
+  left: -2.5%;
+  width: clamp(160px, 46vw, 380px);
+  will-change: transform, opacity;
+}
+.floralBR {
+  position: absolute;
+  z-index: 1;
+  bottom: -1%;
+  right: -1%;
+  width: clamp(112px, 30vw, 240px);
+  will-change: transform, opacity;
+}
+@media (min-width: 720px) {
+  .floralTL {
+    width: clamp(260px, 36%, 400px);
+  }
+  .floralBR {
+    width: clamp(160px, 22%, 250px);
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: clamp(140px, 41vw, 190px);
+  padding-bottom: clamp(52px, 14vw, 100px);
+  will-change: transform, opacity;
+}
+@media (min-width: 720px) {
+  .content {
+    padding-top: clamp(60px, 10vw, 110px);
+  }
+}
+
+.eyebrow {
+  display: grid;
+  gap: 8px;
+  line-height: 1.3;
+}
+.line {
+  display: block;
+}
+
+.names {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin: clamp(22px, 5vw, 34px) 0 clamp(24px, 6vw, 40px);
+  font-weight: 400;
+}
+.name {
+  font-size: var(--fs-names);
+  line-height: 1.15;
+  padding: 0 0.22em 0.08em;
+  color: var(--ink);
+  max-width: 100%;
+  text-wrap: balance;
+}
+
+.and {
+  display: block;
+  width: min(100%, 360px);
+  min-height: 2.4rem;
+  margin: -6px 0;
+}
+
+.details {
+  display: grid;
+  gap: 9px;
+  line-height: 1.3;
+}
+.details .eyebrow,
+.details > span {
+  letter-spacing: 0.22em;
+}
+
+.reception {
+  margin-top: clamp(22px, 5vw, 32px);
+  font-size: clamp(1.45rem, 1.1rem + 1.6vw, 1.9rem);
+  color: var(--ink-soft);
+  padding: 0 0.2em 0.1em;
+}
+
+/* scroll cue */
+.scroll {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--frame-inset) + 14px);
+  transform: translateX(-50%);
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: var(--ink-muted);
+  padding: 8px 12px;
+}
+.scrollLine {
+  display: block;
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(var(--ink-muted), transparent);
+  position: relative;
+  overflow: hidden;
+}
+.scrollLine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  animation: drip 2.2s var(--ease-out) infinite;
+}
+@keyframes drip {
+  0% {
+    transform: translateY(-100%);
+  }
+  60%,
+  100% {
+    transform: translateY(100%);
+  }
+}
+.scrollText {
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}

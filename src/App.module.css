@@ -1,0 +1,16 @@
+.stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(56px, 11vw, 88px);
+}
+.stack > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.footer {
+  text-align: center;
+  color: var(--ink-muted);
+  padding: 8px 0 calc(16px + env(safe-area-inset-bottom));
+  font-size: 0.66rem;
+}

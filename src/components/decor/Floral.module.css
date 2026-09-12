@@ -1,0 +1,16 @@
+.wrap {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
+  z-index: 1;
+}
+
+.inline {
+  position: relative;
+}
+
+.img {
+  width: 100%;
+  height: auto;
+}

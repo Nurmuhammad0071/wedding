@@ -1,0 +1,65 @@
+.card {
+  --flourish: clamp(72px, 20vw, 132px);
+  position: relative;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    var(--cream);
+  box-shadow:
+    0 40px 90px -40px rgba(60, 48, 32, 0.38),
+    0 6px 18px -8px rgba(60, 48, 32, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* embossed double frame */
+.frame {
+  position: absolute;
+  inset: var(--frame-inset);
+  pointer-events: none;
+  z-index: 0;
+  border: 1.5px solid var(--white);
+  box-shadow:
+    0 1px 0 rgba(84, 70, 52, 0.16),
+    inset 0 1px 0 rgba(84, 70, 52, 0.12);
+}
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 1px 0 rgba(84, 70, 52, 0.08),
+    inset 0 1px 0 rgba(84, 70, 52, 0.06);
+}
+
+.flourish {
+  position: absolute;
+  z-index: 1;
+}
+.tl {
+  top: calc(var(--frame-inset) - 4px);
+  left: calc(var(--frame-inset) - 4px);
+}
+.tr {
+  top: calc(var(--frame-inset) - 4px);
+  right: calc(var(--frame-inset) - 4px);
+}
+.bl {
+  bottom: calc(var(--frame-inset) - 4px);
+  left: calc(var(--frame-inset) - 4px);
+}
+.br {
+  bottom: calc(var(--frame-inset) - 4px);
+  right: calc(var(--frame-inset) - 4px);
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  padding: calc(var(--frame-inset) + var(--card-pad)) calc(var(--frame-inset) + var(--card-pad) * 0.85);
+}

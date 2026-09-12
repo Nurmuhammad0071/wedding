@@ -1,0 +1,185 @@
+/* ─── Design tokens (from the reference invitation) ─────────────── */
+:root {
+  --cream: #f7f4ee;
+  --cream-deep: #efe9e0;
+  --paper-edge: #e6dfd4;
+  --white: #ffffff;
+
+  --ink: #2b2f2c;
+  --ink-soft: #565b57;
+  --ink-muted: #8b8f8a;
+
+  --blush: #edbfc6;
+  --blush-deep: #e3a5b0;
+  --blush-light: #f4d7da;
+  --rose: #b9707f; /* readable accent for small text */
+  --gold: #d3ac57;
+  --sage: #8a9a7b;
+  --green: #3d5a34;
+  --green-deep: #2f4a2a;
+
+  --line: rgba(43, 47, 44, 0.16);
+  --line-soft: rgba(43, 47, 44, 0.09);
+
+  --font-serif: 'Cormorant Garamond', 'Cormorant', Georgia, 'Times New Roman', serif;
+  --font-script: 'Pinyon Script', 'Great Vibes', cursive;
+
+  --fs-eyebrow: clamp(0.74rem, 0.68rem + 0.35vw, 0.9rem);
+  --fs-body: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+  --fs-lead: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --fs-names: clamp(2.1rem, 0.5rem + 8vw, 5.2rem);
+  --fs-script-lg: clamp(2.3rem, 1.5rem + 3.6vw, 3.6rem);
+  --fs-script-md: clamp(1.8rem, 1.4rem + 2vw, 2.5rem);
+
+  --frame-inset: 12px;
+  --page-pad: 10px;
+  --card-gap: 12px;
+  --card-pad: clamp(26px, 7vw, 64px);
+  --section-gap: clamp(72px, 14vw, 128px);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-emboss: 0 1px 0 rgba(84, 70, 52, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.8);
+  --shadow-photo: 0 18px 40px -18px rgba(60, 48, 32, 0.35), 0 2px 6px rgba(60, 48, 32, 0.08);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --frame-inset: 22px;
+    --page-pad: 28px;
+    --card-gap: 24px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --frame-inset: 28px;
+    --page-pad: 40px;
+    --card-gap: 32px;
+  }
+}
+
+/* ─── Page shell: the stationery suite stacked on the table ────── */
+.page {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--card-gap);
+  padding: var(--page-pad);
+}
+.page > * {
+  min-width: 0;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--cream-deep);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+/* ─── Typography helpers ───────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-serif);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.eyebrow--muted {
+  color: var(--ink-soft);
+}
+.script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.005em;
+}
+.lead {
+  font-size: var(--fs-lead);
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.small-caps {
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+}
+.center {
+  text-align: center;
+}
+
+/* ─── Paper texture on the page background ─────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .42 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── Reduced motion ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

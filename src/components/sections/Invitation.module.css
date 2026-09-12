@@ -1,0 +1,25 @@
+.wrap {
+  display: grid;
+  gap: clamp(20px, 5vw, 30px);
+  justify-items: center;
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.text {
+  font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
+  line-height: 1.65;
+  color: var(--ink);
+  font-weight: 400;
+}
+.word {
+  display: inline-block;
+  white-space: pre;
+}
+
+.sign {
+  font-size: var(--fs-script-md);
+  color: var(--ink-soft);
+  padding: 0 0.2em 0.1em;
+}
