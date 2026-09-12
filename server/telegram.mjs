@@ -14,19 +14,32 @@ function api(token, method, body) {
   }).then(async (res) => {
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data.ok === false) {
-      const msg = data.description || `Telegram ${method} ${res.status}`;
-      throw new Error(msg);
+      throw new Error(data.description || `Telegram ${method} ${res.status}`);
     }
     return data.result;
   });
 }
 
+function emptyCache() {
+  return { ids: [], users: {} };
+}
+
 function readCache() {
-  if (!existsSync(CACHE)) return {};
+  if (!existsSync(CACHE)) return emptyCache();
   try {
-    return JSON.parse(readFileSync(CACHE, 'utf8'));
+    const raw = JSON.parse(readFileSync(CACHE, 'utf8'));
+    if (Array.isArray(raw.ids)) return { ids: raw.ids.map(String), users: raw.users || {} };
+    // eski format: { username: chatId }
+    const users = {};
+    const ids = [];
+    for (const [k, v] of Object.entries(raw || {})) {
+      if (!v) continue;
+      users[String(k).toLowerCase()] = String(v);
+      ids.push(String(v));
+    }
+    return { ids: [...new Set(ids)], users };
   } catch {
-    return {};
+    return emptyCache();
   }
 }
 
@@ -42,43 +55,43 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;');
 }
 
-/** Pull /start messages and remember chat ids for the configured usernames. */
-export async function syncChatIds() {
-  const { token, usernames } = telegramConfig();
-  if (!token || usernames.length === 0) return readCache();
-
+function rememberChat(chatId, username) {
+  const id = String(chatId || '').trim();
+  if (!id) return false;
   const cache = readCache();
-  await api(token, 'deleteWebhook', { drop_pending_updates: false }).catch(() => {});
-  const updates = await api(token, 'getUpdates?limit=100').catch(() => []);
-  for (const upd of updates) {
-    const from = upd.message?.from || upd.my_chat_member?.from;
-    const chat = upd.message?.chat || upd.my_chat_member?.chat;
-    const username = from?.username?.toLowerCase();
-    if (!username || !chat?.id) continue;
-    rememberUser(cache, username, chat.id);
+  let changed = false;
+  if (!cache.ids.includes(id)) {
+    cache.ids.push(id);
+    changed = true;
   }
-  writeCache(cache);
-  return cache;
-}
-
-function rememberUser(cache, username, chatId) {
-  const key = String(username || '').replace(/^@/, '').toLowerCase();
-  if (!key || !chatId) return false;
-  const { usernames } = telegramConfig();
-  if (!usernames.includes(key)) return false;
-  if (cache[key] === String(chatId)) return false;
-  cache[key] = String(chatId);
-  writeCache(cache);
-  return true;
+  const name = String(username || '')
+    .replace(/^@/, '')
+    .toLowerCase();
+  if (name && cache.users[name] !== id) {
+    cache.users[name] = id;
+    changed = true;
+  }
+  if (changed) writeCache(cache);
+  return changed;
 }
 
 export function recipientIds(cache = readCache()) {
-  const { usernames, chatIds } = telegramConfig();
-  const fromNames = usernames.map((u) => cache[u]).filter(Boolean);
-  return [...new Set([...chatIds, ...fromNames])];
+  const { chatIds } = telegramConfig();
+  return [...new Set([...chatIds.map(String), ...cache.ids])];
 }
 
-/** Keep listening so /start dan keyin chat id yo‘qolmasin. */
+export async function syncChatIds() {
+  const { token } = telegramConfig();
+  if (!token) return readCache();
+  const updates = await api(token, 'getUpdates', { limit: 100, allowed_updates: ['message'] }).catch(() => []);
+  for (const upd of updates || []) {
+    const msg = upd.message;
+    if (!msg?.chat?.id) continue;
+    rememberChat(msg.chat.id, msg.from?.username);
+  }
+  return readCache();
+}
+
 export function startTelegramPolling() {
   const { token } = telegramConfig();
   if (!token) {
@@ -89,29 +102,32 @@ export function startTelegramPolling() {
   let offset = 0;
   const tick = async () => {
     try {
-      const updates = await api(token, `getUpdates?timeout=25&offset=${offset}`);
-      const cache = readCache();
+      const updates = await api(token, 'getUpdates', {
+        timeout: 25,
+        offset,
+        allowed_updates: ['message'],
+      });
       for (const upd of updates || []) {
         offset = Math.max(offset, (upd.update_id || 0) + 1);
-        const msg = upd.message || upd.my_chat_member;
-        const from = msg?.from;
-        const chat = msg?.chat || upd.message?.chat;
-        if (!from?.username || !chat?.id) continue;
-        const saved = rememberUser(cache, from.username, chat.id);
-        const text = String(upd.message?.text || '');
+        const msg = upd.message;
+        if (!msg?.chat?.id) continue;
+        const saved = rememberChat(msg.chat.id, msg.from?.username);
+        const text = String(msg.text || '');
+        if (saved) {
+          console.log('[telegram] saqlandi', msg.from?.username || msg.chat.id);
+        }
         if (saved || /^\/start/i.test(text)) {
           await api(token, 'sendMessage', {
-            chat_id: chat.id,
+            chat_id: msg.chat.id,
             text: 'Qabul qilindi. Endi to‘y javoblari shu yerga keladi.',
-          }).catch(() => {});
-          if (saved) console.log('[telegram] chat id saqlandi', from.username);
+          }).catch((e) => console.error('[telegram] welcome', e.message));
         }
       }
     } catch (err) {
       console.error('[telegram] poll', err instanceof Error ? err.message : err);
       await new Promise((r) => setTimeout(r, 4000));
     }
-    setTimeout(tick, 400);
+    setTimeout(tick, 300);
   };
 
   tick();
@@ -149,16 +165,12 @@ export function formatRsvp({ name, attending, guests, message }) {
 }
 
 export async function sendRsvpToRecipients(payload) {
-  const { token, usernames } = telegramConfig();
+  const { token } = telegramConfig();
   if (!token) throw new Error('Bot token qo‘yilmagan. .env ichiga TELEGRAM_BOT_TOKEN yozing.');
 
-  const cache = readCache();
-  const ids = recipientIds(cache);
+  const ids = recipientIds();
   if (ids.length === 0) {
-    const need = usernames.map((u) => `@${u}`).join(' va ');
-    throw new Error(
-      `${need} botni ochib /start bosishi kerak. Keyin: npm run telegram:setup`,
-    );
+    throw new Error('Botni ochib Start bosing: https://t.me/toyonakunbot');
   }
 
   const text = formatRsvp(payload);
