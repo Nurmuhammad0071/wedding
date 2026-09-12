@@ -101,7 +101,7 @@ export const wedding = {
     notePlaceholder: 'Ovqatlanish, qo‘shiq yoki tilaklaringiz…',
     send: 'Javobni yuborish',
     sending: 'Yuborilmoqda…',
-    error: 'Xatolik yuz berdi. Qayta urinib ko‘ring.',
+    error: 'Hozircha yuborilmadi. Birozdan keyin qayta urinib ko‘ring.',
     thanks: 'Rahmat',
     yesOne: 'Siz bilan birga bo‘lishimizdan juda xursandmiz. Sizga joy saqlanadi.',
     yesMany: (n: number) =>

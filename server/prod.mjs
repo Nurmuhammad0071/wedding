@@ -3,6 +3,7 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { extname, join, normalize, resolve } from 'node:path';
 import { loadEnv } from './env.mjs';
 import { handleRsvp } from './rsvp.mjs';
+import { startTelegramPolling } from './telegram.mjs';
 
 loadEnv();
 
@@ -56,4 +57,5 @@ const server = createServer((req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`wedding invitation on http://${HOST}:${PORT}`);
+  startTelegramPolling();
 });

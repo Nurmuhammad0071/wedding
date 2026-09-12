@@ -55,18 +55,67 @@ export async function syncChatIds() {
     const chat = upd.message?.chat || upd.my_chat_member?.chat;
     const username = from?.username?.toLowerCase();
     if (!username || !chat?.id) continue;
-    if (usernames.includes(username)) {
-      cache[username] = String(chat.id);
-    }
+    rememberUser(cache, username, chat.id);
   }
   writeCache(cache);
   return cache;
+}
+
+function rememberUser(cache, username, chatId) {
+  const key = String(username || '').replace(/^@/, '').toLowerCase();
+  if (!key || !chatId) return false;
+  const { usernames } = telegramConfig();
+  if (!usernames.includes(key)) return false;
+  if (cache[key] === String(chatId)) return false;
+  cache[key] = String(chatId);
+  writeCache(cache);
+  return true;
 }
 
 export function recipientIds(cache = readCache()) {
   const { usernames, chatIds } = telegramConfig();
   const fromNames = usernames.map((u) => cache[u]).filter(Boolean);
   return [...new Set([...chatIds, ...fromNames])];
+}
+
+/** Keep listening so /start dan keyin chat id yo‘qolmasin. */
+export function startTelegramPolling() {
+  const { token } = telegramConfig();
+  if (!token) {
+    console.warn('[telegram] token yo‘q — polling o‘chiq');
+    return;
+  }
+
+  let offset = 0;
+  const tick = async () => {
+    try {
+      const updates = await api(token, `getUpdates?timeout=25&offset=${offset}`);
+      const cache = readCache();
+      for (const upd of updates || []) {
+        offset = Math.max(offset, (upd.update_id || 0) + 1);
+        const msg = upd.message || upd.my_chat_member;
+        const from = msg?.from;
+        const chat = msg?.chat || upd.message?.chat;
+        if (!from?.username || !chat?.id) continue;
+        const saved = rememberUser(cache, from.username, chat.id);
+        const text = String(upd.message?.text || '');
+        if (saved || /^\/start/i.test(text)) {
+          await api(token, 'sendMessage', {
+            chat_id: chat.id,
+            text: 'Qabul qilindi. Endi to‘y javoblari shu yerga keladi.',
+          }).catch(() => {});
+          if (saved) console.log('[telegram] chat id saqlandi', from.username);
+        }
+      }
+    } catch (err) {
+      console.error('[telegram] poll', err instanceof Error ? err.message : err);
+      await new Promise((r) => setTimeout(r, 4000));
+    }
+    setTimeout(tick, 400);
+  };
+
+  tick();
+  console.log('[telegram] polling yoqildi');
 }
 
 export async function getBot() {
@@ -103,7 +152,7 @@ export async function sendRsvpToRecipients(payload) {
   const { token, usernames } = telegramConfig();
   if (!token) throw new Error('Bot token qo‘yilmagan. .env ichiga TELEGRAM_BOT_TOKEN yozing.');
 
-  const cache = await syncChatIds();
+  const cache = readCache();
   const ids = recipientIds(cache);
   if (ids.length === 0) {
     const need = usernames.map((u) => `@${u}`).join(' va ');
